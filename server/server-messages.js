@@ -9,12 +9,16 @@ var ServerMessages = {
   },
 
   add: function(message, callback = ()=>{}) {
+    // set message.id to length of _data array
+    var id = Object.keys(ServerMessages._data).length;
+    message.message_id = id;
+
     ServerMessages._data[message.message_id] = message;
     callback(ServerMessages.items());
   },
 
   update: function(messages, callback = ()=>{}) {
-    var length = Object.keys(Messages._data).length;
+    var length = Object.keys(ServerMessages._data).length;
 
     for (let message of messages) {
       ServerMessages._data[message.message_id] = ServerMessages._conform(message);

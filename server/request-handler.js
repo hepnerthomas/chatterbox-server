@@ -63,15 +63,33 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = 'text/plain';
+  headers['Content-Type'] = 'text/plain ';  // application/json
 
-  if (request.method === 'GET') {
+  if (request.url === '/classes/messages' && request.method === 'GET') {
     statusCode = 200;
     data = ServerMessages.items();
 
-  } else if (request.method === 'POST') {
-    statusCode = 200;
-    data = "This request has not been completed yet."
+  } else if (request.url === '/classes/messages' && request.method === 'POST') {
+    // Set the status code to success: resource created
+    statusCode = 201;
+
+    // Get message from the POST request
+    let message = '';
+    request.on('data', chunk => {
+      message += chunk;
+    });
+
+    // get the data in JSON format
+    request.on('end', () => {
+      // console.log(JSON.parse(data).todo); // 'Buy the milk'
+      message = JSON.parse(message);
+
+      // Check that message conforms
+      message = ServerMessages._conform(message);
+
+      // Add the message to ServerMessages data
+      ServerMessages.add(message);
+    });
   }
   else {
     // else if PATCH
