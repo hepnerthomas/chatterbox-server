@@ -12,6 +12,7 @@ this file and include it in basic-server.js so that it actually works.
 
 **************************************************************/
 const {ServerMessages} = require('./server-messages.js');
+const {examplePost} = require('./example-post.js');
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -64,12 +65,18 @@ var requestHandler = function(request, response) {
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = 'text/plain ';  // application/json
+  // headers['Content-Type'] = 'application/json';  //
+  headers['access-control-allow-methods'] = 'GET, POST, OPTIONS';
 
   if (request.url === '/classes/messages' && request.method === 'GET') {
     statusCode = 200;
     data = ServerMessages.items();
 
-  } else if (request.url === '/classes/messages' && request.method === 'POST') {
+  } else if (request.url === '/classes/messages' && request.method === 'OPTIONS') {
+    statusCode = 200;
+    data = examplePost;
+
+  } else if (request.url === '/classes/messages' && request.method === 'POST' && request.headers['content-type'] === 'application/json') {
     // Set the status code to success: resource created
     statusCode = 201;
 
@@ -82,13 +89,24 @@ var requestHandler = function(request, response) {
     // get the data in JSON format
     request.on('end', () => {
       // console.log(JSON.parse(data).todo); // 'Buy the milk'
-      message = JSON.parse(message);
 
-      // Check that message conforms
-      message = ServerMessages._conform(message);
+      // try to convert to JSON
+      try {
 
-      // Add the message to ServerMessages data
-      ServerMessages.add(message);
+        message = JSON.parse(message);
+
+        // Check that message conforms
+        message = ServerMessages._conform(message);
+        // Add the message to ServerMessages data
+        ServerMessages.add(message);
+
+      // catch error and set status code to 400
+      } catch (error) {
+        statusCode = 400;
+        data = "Improperly formatted request.";
+        console.log(statusCode);
+      }
+
     });
   }
   else {

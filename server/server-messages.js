@@ -35,6 +35,14 @@ var ServerMessages = {
     message.text = message.text || '';
     message.username = message.username || '';
     message.roomname = message.roomname || '';
+
+    // delete keys not specified by the server
+    var keys = Object.keys(message);
+    keys.forEach((key) => {
+      if (!['text', 'username', 'roomname'].includes(key)) {
+        delete message[key];
+      }
+    });
     return message;
   }
 
