@@ -11,6 +11,7 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
+const {ServerMessages} = require('./server-messages.js');
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -21,6 +22,26 @@ var requestHandler = function(request, response) {
   //
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
+
+  // // Need to response to all of these request types
+  // if (request.endpoint === '/users') {
+  //   // do users stuff
+  //   // GET, POST, PATCH, etc.
+  //   if (request.method === 'GET') {
+  //     // fetch all users
+  //     response.writeHead(418, { 'Content-Type': 'application/json' }); // is this the status code we want to use
+  //     response.end(); // end the response
+  //   } else if (request.method === 'POST') {
+  //     // create a new user
+  //   }
+
+  // } else if (request.endpoint === 'blogs') {
+  //   // do blog stuff
+  // }
+  // // GET
+  //   // users, blogs, tweets, etc.
+  // // POST
+  // // PUT
 
   // Do some basic logging.
   //
@@ -52,7 +73,7 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end('Hello, World!');
+  response.end(JSON.stringify(ServerMessages.items()));
 };
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).

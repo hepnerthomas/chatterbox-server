@@ -3,7 +3,7 @@ var http = require('http');
 var path = require('path');
 
 // Require request-handler module
-debugger;
+// debugger;
 const { requestHandler, defaultCorsHeaders } = require('./request-handler.js');
 
 // Every server needs to listen on a port with a unique number. The
